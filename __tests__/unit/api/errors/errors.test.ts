@@ -3,7 +3,7 @@ import {
   BadRequestError,
   NotFoundError,
   ValidationError
-} from "../../../../src/api/errors/errors"
+} from "../../../../src/api/errors"
 
 const errorsTestData = [
   {
@@ -47,7 +47,7 @@ const errorsTestData = [
   }
 ]
 
-describe("Custom Errors", () => {
+describe("custom errors", () => {
   errorsTestData.forEach(
     ({ name, ErrorClass, args, expectedStatusCode, expectedDetails }) => {
       describe(name, () => {

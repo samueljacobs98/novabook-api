@@ -48,7 +48,7 @@ describe("errorHandler middleware", () => {
     })
   })
 
-  it("should handle BaseError instances without", () => {
+  it("should handle BaseError instances without details", () => {
     const error = new TestError(StatusCodes.BAD_REQUEST)
 
     errorHandler(error, req as Request, res as Response, next)

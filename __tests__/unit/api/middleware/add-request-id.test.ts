@@ -25,7 +25,7 @@ describe("requestId middleware", () => {
     jest.resetAllMocks()
   })
 
-  it("should set res.locals.id and X-Request-Id header with a UUID", () => {
+  it("should set res.locals.id and X-Request-Id header with a uuid", () => {
     const fakeUuid = "123e4567-e89b-12d3-a456-426614174000"
 
     ;(uuid as jest.Mock).mockReturnValue(fakeUuid)
