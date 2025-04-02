@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from "winston"
 import DailyRotateFile from "winston-daily-rotate-file"
-import config from "../config"
+import config from "./config"
 
 type LogLevel = "error" | "warn" | "info" | "http" | "verbose" | "debug"
 
@@ -20,8 +20,8 @@ const logger = createLogger({
       key: "meta",
       fillExcept: ["message", "level", "timestamp"]
     }),
-    format.printf(({ timestamp, level, message, meta, stack }) => {
-      const requestId = meta?.requestId || "N/A"
+    format.printf(({ timestamp, level, message, stack, meta }) => {
+      const requestId = (meta as { requestId?: string })?.requestId || "N/A"
       return `[${timestamp}] [${level}] [Request ID: ${requestId}] ${
         stack || message
       }`

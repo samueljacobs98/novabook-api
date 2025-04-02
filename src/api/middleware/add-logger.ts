@@ -2,11 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { Logger } from "winston"
 import logger from "../logger"
 
-export function loggerMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function addLogger(req: Request, res: Response, next: NextFunction) {
   const requestId = res.locals.id || "N/A"
 
   ;(req as Request & { logger: Logger }).logger = logger.child({ requestId })

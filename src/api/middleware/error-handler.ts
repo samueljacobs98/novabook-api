@@ -10,13 +10,13 @@ export function errorHandler(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
 ) {
-  logger.error(err)
+  logger.error(err.message, { requestId: res.locals.id })
 
   if (err instanceof BaseError) {
     return res.status(err.statusCode).json({
       status: "error",
       message: getReasonPhrase(err.statusCode),
-      details: err.details ?? null
+      details: err.details
     })
   }
 
