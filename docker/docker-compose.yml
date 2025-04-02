@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+    volumes:
+      - ../:/app
+      - ../node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    env_file:
+      - ../.env.${NODE_ENV}
+    command: sh -c "npm run build && npm start"

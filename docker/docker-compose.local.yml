@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.local
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+    volumes:
+      - ../src:/app/src
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=local
+    env_file:
+      - ../.env.local
+    command: npm run dev
