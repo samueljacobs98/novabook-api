@@ -1,0 +1,158 @@
+openapi: 3.0.3
+info:
+  title: Novabook Tax Service API
+  description: API for ingesting transaction events and querying tax position
+  version: 1.0.0
+
+paths:
+  /transactions:
+    post:
+      summary: Ingest transaction events (sales or tax payments)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/SaleEvent"
+                - $ref: "#/components/schemas/TaxPaymentEvent"
+            examples:
+              SaleEventExample:
+                summary: Sale Event
+                value:
+                  eventType: SALES
+                  date: "2024-02-22T17:29:39Z"
+                  invoiceId: "3419027d-960f-4e8f-b8b7-f7b2b4791824"
+                  items:
+                    - itemId: "02db47b6-fe68-4005-a827-24c6e962f3df"
+                      cost: 1099
+                      taxRate: 0.2
+              TaxPaymentEventExample:
+                summary: Tax Payment Event
+                value:
+                  eventType: TAX_PAYMENT
+                  date: "2024-02-22T17:29:39Z"
+                  amount: 74901
+      responses:
+        "202":
+          description: Accepted
+
+  /tax-position:
+    get:
+      summary: Query tax position for a given date
+      parameters:
+        - name: date
+          description: Date and time ISO 8601
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          example: "2024-02-22T17:29:39Z"
+      responses:
+        "200":
+          description: Successful tax position query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaxPositionResponse"
+              example:
+                date: "2024-02-22T17:29:39Z"
+                taxPosition: 49
+
+  /sale:
+    patch:
+      summary: Amend a sale item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AmendSaleEvent"
+            example:
+              date: "2024-02-22T17:29:39Z"
+              invoiceId: "3419027d-960f-4e8f-b8b7-f7b2b4791824"
+              itemId: "02db47b6-fe68-4005-a827-24c6e962f3df"
+              cost: 798
+              taxRate: 0.15
+      responses:
+        "202":
+          description: Accepted
+
+components:
+  schemas:
+    SaleEvent:
+      type: object
+      required: [eventType, date, invoiceId, items]
+      properties:
+        eventType:
+          type: string
+          enum: [SALES]
+        date:
+          type: string
+          format: date-time
+          description: Date and time ISO 8601
+        invoiceId:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SaleItem"
+
+    SaleItem:
+      type: object
+      required: [itemId, cost, taxRate]
+      properties:
+        itemId:
+          type: string
+        cost:
+          type: integer
+          description: Amount in pennies
+        taxRate:
+          type: number
+          description: Decimal tax rate (e.g., 0.2 for 20%)
+
+    TaxPaymentEvent:
+      type: object
+      required: [eventType, date, amount]
+      properties:
+        eventType:
+          type: string
+          enum: [TAX_PAYMENT]
+        date:
+          type: string
+          format: date-time
+          description: Date and time ISO 8601
+        amount:
+          type: integer
+          description: Amount in pennies
+
+    AmendSaleEvent:
+      type: object
+      required: [date, invoiceId, itemId, cost, taxRate]
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: Date and time ISO 8601
+        invoiceId:
+          type: string
+        itemId:
+          type: string
+        cost:
+          type: integer
+          description: Amount in pennies
+        taxRate:
+          type: number
+
+    TaxPositionResponse:
+      type: object
+      required: [date, taxPosition]
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: Date and time ISO 8601
+        taxPosition:
+          type: integer
+          description: Tax position in pennies
