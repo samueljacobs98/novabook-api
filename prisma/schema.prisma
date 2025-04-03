@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Sale {
+  id        String   @id @default(uuid())
+  invoiceId String
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  items SaleItem[]
+
+  @@index([invoiceId])
+}
+
+model SaleItem {
+  id     String @id @default(uuid())
+  sale   Sale   @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  saleId String
+
+  itemId  String
+  cost    Int
+  taxRate Float
+
+  @@index([itemId])
+}
+
+model Amendment {
+  id        String   @id @default(uuid())
+  invoiceId String
+  itemId    String
+  date      DateTime
+  cost      Int
+  taxRate   Float
+
+  @@index([invoiceId, itemId])
+}
+
+model TaxPayment {
+  id     String   @id @default(uuid())
+  date   DateTime
+  amount Int
+}

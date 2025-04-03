@@ -4,8 +4,11 @@ info:
   description: API for ingesting transaction events and querying tax position
   version: 1.0.0
 
+servers:
+  - url: http://localhost:3000/api
+
 paths:
-  /transactions:
+  /v1/transactions:
     post:
       summary: Ingest transaction events (sales or tax payments)
       requestBody:
@@ -37,7 +40,7 @@ paths:
         "202":
           description: Accepted
 
-  /tax-position:
+  /v1/tax-position:
     get:
       summary: Query tax position for a given date
       parameters:
@@ -60,7 +63,7 @@ paths:
                 date: "2024-02-22T17:29:39Z"
                 taxPosition: 49
 
-  /sale:
+  /v1/sale:
     patch:
       summary: Amend a sale item
       requestBody:
@@ -78,6 +81,35 @@ paths:
       responses:
         "202":
           description: Accepted
+
+  /v1/health:
+    get:
+      summary: Check service health
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  database:
+                    type: string
+                    enum: [connected]
+              example:
+                database: "connected"
+        "500":
+          description: Unable to connect to the database.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  database:
+                    type: string
+                    enum: [unreachable]
+              example:
+                database: "connected"
 
 components:
   schemas:

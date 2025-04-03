@@ -19,12 +19,6 @@ const logger = createLogger({
     format.metadata({
       key: "meta",
       fillExcept: ["message", "level", "timestamp"]
-    }),
-    format.printf(({ timestamp, level, message, stack, meta }) => {
-      const requestId = (meta as { requestId?: string })?.requestId || "N/A"
-      return `[${timestamp}] [${level}] [Request ID: ${requestId}] ${
-        stack || message
-      }`
     })
   ),
   transports: [
