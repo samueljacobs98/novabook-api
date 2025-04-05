@@ -18,5 +18,13 @@ export default {
   clearMocks: true,
   restoreMocks: true,
   resetMocks: true,
-  setupFiles: ["<rootDir>/jest.setup.ts"]
+  setupFiles: ["<rootDir>/jest.setup.ts"],
+  transform: {
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: "tsconfig.test.json"
+      }
+    ]
+  }
 }

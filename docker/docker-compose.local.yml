@@ -16,4 +16,18 @@ services:
       - NODE_ENV=local
     env_file:
       - ../.env.local
+    depends_on:
+      - db
     command: npm run dev
+
+  db:
+    image: postgres:15
+    container_name: novabook-db
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - novabook-db-data:/var/lib/postgresql/data
+
+volumes:
+  novabook-db-data:

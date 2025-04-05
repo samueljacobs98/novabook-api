@@ -10,7 +10,7 @@ describe("addLogger middleware", () => {
   let mockLogger: Logger
 
   beforeEach(() => {
-    mockLogger = { debug: jest.fn() } as unknown as Logger
+    mockLogger = { info: jest.fn() } as unknown as Logger
 
     jest.spyOn(logger, "child").mockReturnValue(mockLogger)
 
@@ -37,8 +37,7 @@ describe("addLogger middleware", () => {
 
     expect(logger.child).toHaveBeenCalledWith({ requestId: "12345" })
     expect((req as Request & { logger: Logger }).logger).toBe(mockLogger)
-    expect(mockLogger.debug).toHaveBeenCalledWith({
-      message: "Incoming request:",
+    expect(mockLogger.info).toHaveBeenCalledWith("Incoming request:", {
       method: req.method,
       url: req.url,
       headers: req.headers
@@ -54,8 +53,7 @@ describe("addLogger middleware", () => {
 
     expect(logger.child).toHaveBeenCalledWith({ requestId: "N/A" })
     expect((req as Request & { logger: Logger }).logger).toBe(mockLogger)
-    expect(mockLogger.debug).toHaveBeenCalledWith({
-      message: "Incoming request:",
+    expect(mockLogger.info).toHaveBeenCalledWith("Incoming request:", {
       method: req.method,
       url: req.url,
       headers: req.headers

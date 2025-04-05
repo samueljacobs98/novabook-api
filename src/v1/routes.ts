@@ -1,8 +1,8 @@
 import { Router } from "express"
-import { ping } from "./controllers"
+import { health } from "./controllers/health.controller"
 
 const router = Router()
 
-router.get("/ping", ping)
+router.get("/health", health)
 
 export default router

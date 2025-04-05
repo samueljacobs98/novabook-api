@@ -23,3 +23,6 @@ logs:
 stop:
 	@echo "Stopping services for '$(env)' environment..."; \
 	NODE_VERSION=$(NODE_VERSION) APP_NAME=$(APP_NAME) ENVIRONMENT="$(env)" sh docker/scripts/stop.sh
+
+prune:
+	docker builder prune -f  
