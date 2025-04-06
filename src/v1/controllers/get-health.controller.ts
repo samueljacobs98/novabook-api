@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { prisma } from "../../api/db"
 
-export async function health(req: Request, res: Response) {
+export async function getHealth(req: Request, res: Response) {
   try {
     await prisma.$queryRaw`SELECT 1`
 

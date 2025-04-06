@@ -37,9 +37,7 @@ describe("errorHandler middleware", () => {
 
     errorHandler(error, req as Request, res as Response, next)
 
-    expect(logger.error).toHaveBeenCalledWith(error.message, {
-      requestId: "test-request-id"
-    })
+    expect(logger.error).toHaveBeenCalledWith(error)
     expect(res.status).toHaveBeenCalledWith(error.statusCode)
     expect(res.json).toHaveBeenCalledWith({
       status: "error",
@@ -53,9 +51,7 @@ describe("errorHandler middleware", () => {
 
     errorHandler(error, req as Request, res as Response, next)
 
-    expect(logger.error).toHaveBeenCalledWith(error.message, {
-      requestId: "test-request-id"
-    })
+    expect(logger.error).toHaveBeenCalledWith(error)
     expect(res.status).toHaveBeenCalledWith(error.statusCode)
     expect(res.json).toHaveBeenCalledWith({
       status: "error",
@@ -68,9 +64,7 @@ describe("errorHandler middleware", () => {
 
     errorHandler(error, req as Request, res as Response, next)
 
-    expect(logger.error).toHaveBeenCalledWith(error.message, {
-      requestId: "test-request-id"
-    })
+    expect(logger.error).toHaveBeenCalledWith(error)
     expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR)
     expect(res.json).toHaveBeenCalledWith({
       status: "error",

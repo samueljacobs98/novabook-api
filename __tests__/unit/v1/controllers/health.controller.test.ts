@@ -1,7 +1,8 @@
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
+import { Logger } from "winston"
 import { prisma } from "../../../../src/api/db"
-import { health } from "../../../../src/v1/controllers/health.controller"
+import { getHealth } from "../../../../src/v1/controllers/get-health.controller"
 
 jest.mock("../../../../src/api/db", () => ({
   prisma: {
@@ -28,7 +29,7 @@ describe("ping endpoint", () => {
   it("should respond with status 200 and 'database: connected'", async () => {
     ;(prisma.$queryRaw as jest.Mock).mockResolvedValueOnce(1)
 
-    await health(req, res)
+    await getHealth(req, res)
 
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     expect(res.json).toHaveBeenCalledWith({ database: "connected" })
@@ -38,9 +39,11 @@ describe("ping endpoint", () => {
     const error = new Error("DB down")
     ;(prisma.$queryRaw as jest.Mock).mockRejectedValueOnce(error)
 
-    await health(req, res)
+    await getHealth(req, res)
 
-    expect(req.logger.error).toHaveBeenCalledWith("Health check failed:", error)
+    expect(
+      (req as Request & { logger: Logger }).logger.error
+    ).toHaveBeenCalledWith("Health check failed:", error)
     expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR)
     expect(res.json).toHaveBeenCalledWith({ database: "unreachable" })
   })
