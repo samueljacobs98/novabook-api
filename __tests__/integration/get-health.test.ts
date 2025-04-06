@@ -27,6 +27,10 @@ describe("GET /api/v1/health", () => {
     const response = await request(app).get("/api/v1/health")
 
     expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
-    expect(response.body).toEqual({ database: "unreachable" })
+    expect(response.body).toEqual({
+      message: "Internal Server Error",
+      status: "error",
+      database: "unreachable"
+    })
   })
 })

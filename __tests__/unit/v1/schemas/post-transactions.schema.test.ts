@@ -30,18 +30,22 @@ describe("postTransactionsSchema", () => {
     })
 
     it("should validate a valid tax payment event", () => {
+      const dateString = "2023-10-02T00:00:00Z"
+      const date = new Date(dateString)
+
       const taxPaymentEvent = {
         eventType: "TAX_PAYMENT",
-        date: "2023-10-02T00:00:00Z",
+        date: dateString,
         amount: 150
       }
       const validData = { body: taxPaymentEvent }
+      const expectedParsedData = { body: { ...taxPaymentEvent, date } }
       const result = postTransactionsSchema.safeParse(
         validData
-      ) as SafeParseSuccess<typeof validData>
+      ) as SafeParseSuccess<typeof expectedParsedData>
 
       expect(result.success).toBe(true)
-      expect(result.data).toEqual(validData)
+      expect(result.data).toEqual(expectedParsedData)
     })
   })
 

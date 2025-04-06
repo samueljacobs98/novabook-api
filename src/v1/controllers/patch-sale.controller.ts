@@ -1,5 +1,5 @@
 import { Response } from "express"
-import { StatusCodes } from "http-status-codes"
+import { StatusCodes, getReasonPhrase } from "http-status-codes"
 import { ParsedRequest } from "../../api/types"
 import { patchSaleSchema } from "../schemas/patch-sale.schema"
 import { createSaleAmendment } from "./db/create-sale-amendment.db"
@@ -14,6 +14,9 @@ export async function patchSale(
     res.status(StatusCodes.ACCEPTED).send()
   } catch (error) {
     req.logger.error(error)
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: "error",
+      message: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)
+    })
   }
 }
