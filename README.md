@@ -29,37 +29,37 @@ This is a simple API for handling sale and tax transactions and enable users to 
 
 All logs are stored in the `logs` directory. The logs are rotated daily and kept for 14 days. The log files are named in the format `app-YYYY-MM-DD.log`.
 
-All requests have a unique request ID which is logged with all corresponding logs that can be used to track a request through the system.
+Every request is assigned a unique request ID, which is logged with all related events to enable traceability through the system.
 
 ### Database
 
 - PostgreSQL - for the database - selected for its reliability and performance which is crucial for handling financial transactions
 - Prisma - for ORM and database migrations - selected for its type safety and ease of use
 
-Rather than operating on data in the database when amendments are provided, these amendments are stored. This ensures that the original data is preserved and can be audited. This creates some run-time overhead, but it is worth it for the added safety and reliability.
+Rather than mutating existing data, amendments are stored as new entries. This ensures that original data is preserved and auditable. While this adds some runtime overhead, it significantly enhances safety and traceability.
 
-When running the `local` setup, the database is automatically created and seeded with test data.
+When running the local setup, the database is automatically created and seeded with test data.
 
 ### Containerization and Deployment
 
 - Docker - for containerization
-- Docker Compose - for container orchestration
-- Shell scripts - for deployment automation
+- Docker Compose - for orchestration
+- Shell scripts - for environment setup and deployment automation
 - Makefile - for task automation
 - nvm - for managing Node.js versions
 
-By combining Docker, Docker Compose, Shell scripts, Makefile, and nvm, we can create a powerful and flexible development and deployment environment. This allows us to easily manage dependencies, automate tasks, and ensure that our application runs consistently across different environments. It should be noted that even in 'deployed' environments (i.e. any non-local environment), the database is still running in a Docker container. However, in a real scenario, the database would be hosted on a separate server or service (e.g. AWS RDS, Azure SQL Database, etc.) for better performance and reliability.
+By combining Docker, Docker Compose, shell scripts, a Makefile, and nvm, we provide a consistent and portable development environment. Note: even in deployed environments (e.g., development, staging, production), the database runs inside a Docker container for simplicity. In a real-world deployment, the database would be hosted externally (e.g., AWS RDS, Azure Database) for better scalability and performance.
 
 ### Testing
 
-- Jest - for unit and integration testing
-- Supertest - for testing HTTP requests
+- Jest - for unit testing
+- Supertest - for e2e testing HTTP requests
 
 ### CI/CD
 
 - GitHub Actions - for continuous integration and deployment
 
-GitHub Actions is used to automatically run tests whenever code is pushed to the repository. This ensures that the code is always tested and ready for deployment. The Action used checks all unit and integration tests pass, tests the build, and checks for linting errors.
+GitHub Actions is used to automatically run tests whenever code is pushed to the repository. This ensures that the code is always tested and ready for deployment. The Action used checks all unit and e2e tests pass, tests the build, and checks for linting errors.
 
 ### Documentation
 
@@ -72,6 +72,7 @@ GitHub Actions is used to automatically run tests whenever code is pushed to the
 
 ```bash
 https://github.com/samueljacobs98/novabook-api.git
+cd novabook-api
 ```
 
 2. Install dependencies
@@ -93,18 +94,20 @@ Create the necessary `.env` files in the root directory. You can create the foll
 - `.env.staging`
 - `.env.production`
 
-Each .env file should contain the required environment variables for the application. Here is what the `.env` file should look like:
+Each `.env` file should contain the required environment variables for the application. Here is what the `.env` file should look like:
 
 ```env
 DATABASE_URL=<postgresql_connection_url>
 ```
 
-5. Set up the database:
+5. Set up the database (optional for local dev):
 
 Run the following command to set up the database:
 
+This is handled automatically by `make local`, but if working outside Docker:
+
 ```bash
-npm prisma:generate
+npx prisma generate
 ```
 
 6. Run the application:
@@ -115,23 +118,23 @@ Use `make` followed by the corresponding environment:
 make local
 ```
 
-This will start the application in local mode. You can also use `make development`, `make staging`, or `make production` to run the application in the respective environments.
+This will run the application in local mode, starting the API and Postgres container, applying migrations and seeding data. You can also use `make development`, `make staging`, or `make production` to run the application in the respective environments.
 
-To view the logs in the running application, run
+7. View logs
 
 ```bash
 make logs env=<environment>
 ```
 
-If no environment is provided it will default to local.
+If no `env` is provided it will default to `local`.
 
-7. Stop the application
+8. Stop the application
 
 ```bash
 make stop env=<environment>
 ```
 
-8. Run unit and integration tests
+9. Run tests
 
 ```bash
 npm test
@@ -139,4 +142,10 @@ npm test
 
 9. View the API documentation
 
-Run the API in any environment and navigate to `http://localhost:3000/api/docs/`. Alternatively, you can import the `swagger.yaml` file to `editor.swagger.io` to view the API documentation.
+Once the app is running, visit:
+
+```bash
+http://localhost:3000/api/docs/
+```
+
+Or import the `swagger.yaml` file into [Swagger Editor](https://editor.swagger.io/) to view the API documentation.

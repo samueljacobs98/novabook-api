@@ -19,14 +19,22 @@ export NODE_ENV=$ENVIRONMENT
 
 cd "$(dirname "$0")/.."
 
+echo "Building containers..."
 docker-compose \
   -p "${APP_NAME}-${ENVIRONMENT}" \
   -f docker-compose.yml \
   --env-file "../.env.${ENVIRONMENT}" \
   build --build-arg NODE_VERSION="${NODE_VERSION}"
 
+echo "Starting containers..."
 docker-compose \
   -p "${APP_NAME}-${ENVIRONMENT}" \
   -f docker-compose.yml \
   --env-file "../.env.${ENVIRONMENT}" \
   up -d
+
+echo "Applying Prisma migrations..."
+docker-compose \
+  -p "${APP_NAME}-${ENVIRONMENT}" \
+  -f docker-compose.yml \
+  exec app sh -c "npx prisma migrate deploy"
