@@ -6,6 +6,7 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
+    "prisma:generate": "prisma generate",
     "lint": "eslint 'src/**/*.{ts,js}'",
     "test": "jest --coverage",
     "prettier": "prettier --write 'src/**/*.{ts,js,json}'"
