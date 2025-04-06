@@ -10,7 +10,7 @@ jest.mock("../../../../src/api/db", () => ({
   }
 }))
 
-describe("ping endpoint", () => {
+describe("getHealth", () => {
   let req: Request
   let res: Response
 
@@ -45,6 +45,10 @@ describe("ping endpoint", () => {
       (req as Request & { logger: Logger }).logger.error
     ).toHaveBeenCalledWith("Health check failed:", error)
     expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR)
-    expect(res.json).toHaveBeenCalledWith({ database: "unreachable" })
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Internal Server Error",
+      status: "error",
+      database: "unreachable"
+    })
   })
 })

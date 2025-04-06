@@ -20,7 +20,10 @@ const saleEventSchema = z.object({
 })
 const taxPaymentEventSchema = z.object({
   eventType: z.literal("TAX_PAYMENT"),
-  date: z.string().datetime(),
+  date: z
+    .string()
+    .datetime()
+    .transform((date) => new Date(date)),
   amount: z.number().min(0, "Amount must be at least 0")
 })
 

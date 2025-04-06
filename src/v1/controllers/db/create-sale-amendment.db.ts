@@ -1,25 +1,11 @@
 import { prisma } from "../../../api/db"
 
-export async function createSaleAmendment({
-  date,
-  invoiceId,
-  itemId,
-  cost,
-  taxRate
-}: {
+export async function createSaleAmendment(data: {
   date: Date
   invoiceId: string
   itemId: string
   cost: number
   taxRate: number
 }) {
-  await prisma.amendment.create({
-    data: {
-      date,
-      invoiceId,
-      itemId,
-      cost,
-      taxRate
-    }
-  })
+  await prisma.amendment.create({ data })
 }

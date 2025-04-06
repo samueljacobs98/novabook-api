@@ -105,10 +105,17 @@ paths:
               schema:
                 type: object
                 properties:
+                  message:
+                    type: string
+                  status:
+                    type: string
+                    enum: [error]
                   database:
                     type: string
                     enum: [unreachable]
               example:
+                message: "Internal Server Error"
+                status: "error"
                 database: "connected"
 
 components:
